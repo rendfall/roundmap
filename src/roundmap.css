@@ -1,8 +1,8 @@
 .roundmap { 
-    position:relative;
-    width:270px;
-    height:270px;
-    border:6px solid white; 
+    position: relative;
+    width: 270px;
+    height: 270px;
+    border: 6px solid white; 
     margin: 15px 0;
 
     border-radius: 50%;
@@ -16,24 +16,30 @@
     border-radius: 0%;
 }
 .roundmap .marker {
-    display:block;
-    position:relative;
-    top:-40px;
-    left:-17px;
-    width:35px;
-    height:43px;
-    background:url('../assets/world-marker.png');
-    cursor:pointer; 
+    display: block;
+    position: relative;
+    top: -40px;
+    left: -17px;
+    width: 35px;
+    height: 43px;
+    background: url('../assets/world-marker.png');
+    cursor: pointer; 
+}
+
+.roundmap .marker-point {
+    position: absolute;
 }
 
 .roundmap .world {
-    position:relative;
-    background:url('../assets/world.png');
-    width:100%;
-    height:100%;
+    position: relative;
+    background: url('../assets/world.png');
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
 
     transition: border-radius 400ms ease-in-out;
     overflow: hidden;
 }
-.roundmap .world:active{cursor:move;}
+.roundmap .world:active{
+    cursor:move
+}

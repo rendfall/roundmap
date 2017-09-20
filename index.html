@@ -10,7 +10,7 @@
 
 <div class="roundmap">
     <div class="world"></div>
-    <div class="marker-point" style="width: 0px; height: 0px; position: absolute;">
+    <div class="marker-point">
         <i class="marker"></i>
     </div>
 </div>
@@ -20,11 +20,11 @@
 <script>
     new RoundMap({
         initCoords: { 
-            marker:{ left: 150, top: 150 }, 
-            world: { left: 0, top: 0 }
+            marker:{ x: 150, y: 150 }, 
+            world: { x: 0, y: 0 }
         },
         container: '.roundmap',
-        rotateSpeed: 2500,
+        rotateSpeed: 1000,
         zoom: 1
     });
 </script>
