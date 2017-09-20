@@ -51,8 +51,6 @@ class RoundMap {
     updateWorldPosition(diffX, diffY) {
         this.world.x += diffX;
         this.world.y += diffY;
-        this.world.x %= this.$container.width();
-        this.world.y %= this.$container.height();
 
         let x = (this.world.x * this.options.zoom);
         let y = (this.world.y * this.options.zoom);
