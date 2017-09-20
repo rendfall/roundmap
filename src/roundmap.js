@@ -2,24 +2,31 @@ class RoundMap {
     constructor(options) {
         this.$host = $(options.container);
         this.options = options;
-        this.marker = {
-            selector: null,
-            left: 0,
-            top: 0
-        };
-        this.world = {
-            selector: null,
-            left: 0,
-            top: 0
-        };
 
+        this.setupWorld(0, 0);
+        this.setupMarker(0, 0);
         this.init();
     }
 
+    setupWorld(x, y) {
+        let $world = this.$host.find('.world');
+        this.world = {
+            selector: $world,
+            left: x,
+            top: y
+        };
+    }
+
+    setupMarker(x, y) {
+        let $marker = this.$host.find('.marker-point');
+        this.marker = {
+            selector: $marker,
+            left: x,
+            top: y
+        };
+    }
+
     init() {
-        this.marker.selector = this.$host.find('.marker-point');
-        this.world.selector = this.$host.find('.world');
-        
         // init animate 
         this.marker.selector.hide();
         this.world.selector.animate({
@@ -45,6 +52,7 @@ class RoundMap {
     addOffset(el, diffX, diffY) {
         switch(el){
             case('world'):
+                debugger;
                 this.world.left += diffX;
                 this.world.top += diffY;
                 this.world.left = this.world.left % this.$host.width();
@@ -69,7 +77,6 @@ class RoundMap {
                     'left': (this.marker.left * this.options.zoom)+'px', 
                     'top': (this.marker.top * this.options.zoom)+'px'
                 });
-            break;
         }
     }
 
