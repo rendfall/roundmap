@@ -1,19 +1,7 @@
-
-let settings = {
-    initCoords: { 
-        marker:{ left: 150, top: 150 }, 
-        world: { left: 0, top: 0 }
-    },
-    container: '#canvas',
-    rotate: 2500,
-    markerFalling: 350,
-    zoom: 1
-};
-
-let $this = $('#canvas');
-
 class RoundMap {
-    constructor() {
+    constructor(options) {
+        this.$host = $(options.container);
+        this.options = options;
         this.marker = {
             selector: null,
             left: 0,
@@ -29,18 +17,18 @@ class RoundMap {
     }
 
     init() {
-        this.marker.selector = $this.find('.marker-point');
-        this.world.selector = $this.find('.world');
+        this.marker.selector = this.$host.find('.marker-point');
+        this.world.selector = this.$host.find('.world');
         
         // init animate 
         this.marker.selector.hide();
         this.world.selector.animate({
             'background-position': (this.world.selector.width() * -5)+'px'
         }, {
-            duration: settings.rotate/2,
+            duration: this.options.rotate/2,
             complete: () => {
                 this.marker.selector.show();
-                this.moveTo(settings.initCoords);
+                this.moveTo(this.options.initCoords);
             }
         });
 
@@ -59,11 +47,11 @@ class RoundMap {
             case('world'):
                 this.world.left += diffX;
                 this.world.top += diffY;
-                this.world.left = this.world.left % $this.width();
-                this.world.top = this.world.top % $this.height();
+                this.world.left = this.world.left % this.$host.width();
+                this.world.top = this.world.top % this.$host.height();
 
                 this.world.selector.css({
-                    'background-position': (this.world.left * settings.zoom)+ 'px ' +(this.world.top * settings.zoom) + 'px'
+                    'background-position': (this.world.left * this.options.zoom)+ 'px ' +(this.world.top * this.options.zoom) + 'px'
                     //'background-position-y': this.world.top+'px' 
                 });
                 break;
@@ -72,14 +60,14 @@ class RoundMap {
                 this.marker.left += diffX;
                 this.marker.top += diffY;
                 this.marker.left = this.marker.left < 0 ? 0 : this.marker.left;
-                this.marker.left = this.marker.left > $this.width() ? $this.width() : this.marker.left;
+                this.marker.left = this.marker.left > this.$host.width() ? this.$host.width() : this.marker.left;
 
                 this.marker.top = this.marker.top < 0 ? 0 : this.marker.top;
-                this.marker.top = this.marker.top > $this.height() ? $this.height() : this.marker.top;
+                this.marker.top = this.marker.top > this.$host.height() ? this.$host.height() : this.marker.top;
                            
                 this.marker.selector.css({
-                    'left': (this.marker.left * settings.zoom)+'px', 
-                    'top': (this.marker.top * settings.zoom)+'px'
+                    'left': (this.marker.left * this.options.zoom)+'px', 
+                    'top': (this.marker.top * this.options.zoom)+'px'
                 });
             break;
         }
@@ -92,21 +80,21 @@ class RoundMap {
         this.marker.selector
             .css({
                 'opacity': 0,
-                'left': (settings.zoom * this.marker.left)+'px', 
-                'top': (settings.zoom * (this.marker.top-100)) +'px'
+                'left': (this.options.zoom * this.marker.left)+'px', 
+                'top': (this.options.zoom * (this.marker.top-100)) +'px'
             });
         
         // animate
         this.world.selector.animate({
-            'background-position': (settings.zoom * this.world.left)+ 'px ' +(settings.zoom * this.world.top)+'px'
+            'background-position': (this.options.zoom * this.world.left)+ 'px ' +(this.options.zoom * this.world.top)+'px'
         }, {
-            duration: settings.rotate/4,
+            duration: this.options.rotate/4,
             complete: () => {
                 this.marker.selector
                 .animate({
                     opacity: 1,
-                    top: (settings.zoom * this.marker.top)+'px'
-                }, settings.markerFalling);
+                    top: (this.options.zoom * this.marker.top)+'px'
+                }, this.options.markerFalling);
             }
         });
     }

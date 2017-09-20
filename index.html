@@ -18,7 +18,16 @@
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="./src/roundmap.js" type="text/javascript"></script>
 <script>
-    new RoundMap();
+    new RoundMap({
+        initCoords: { 
+            marker:{ left: 150, top: 150 }, 
+            world: { left: 0, top: 0 }
+        },
+        container: '#canvas',
+        rotate: 2500,
+        markerFalling: 350,
+        zoom: 1
+    });
 </script>
 </body>
 </html>
