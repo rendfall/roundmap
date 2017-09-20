@@ -1,150 +1,209 @@
+class layerAbstract {
+    constructor($host, x, y) {
+        this.$host = $host;
+        this.x = x;
+        this.y = y;
+    }
+
+    hide() {
+        this.$host.css('opacity', 0);
+    }
+
+    show() {
+        this.$host.css('opacity', 1);
+    }
+
+    on(eventName, handlerFn) {
+        this.$host.on(eventName, handlerFn);
+    }
+}
+
+class World extends layerAbstract {
+    constructor($host, x, y) {
+        super($host, x, y)
+    }
+
+    get width() {
+        return this.$host.width();
+    }
+
+    spinTo(x, y, speed) {
+        return new Promise((resolve, reject) => {
+            this.$host.animate({
+                'background-position': `${x}px ${y}px`
+            }, {
+                duration: speed,
+                complete: () => resolve()
+            });
+        });
+    }
+
+    setPositionTo(x, y) {
+        this.$host.css({
+            'background-position': `${x}px ${y}px`
+        });
+    }
+}
+
+class Marker extends layerAbstract {
+    constructor($host, x, y) {
+        super($host, x, y)
+    }
+
+    setPositionTo(x, y) {
+        this.$host.css({
+            left: `${x}px`,
+            top:  `${y}px`
+        });
+    }
+
+    dropAt(x, y, zoom = 1, speed = 350) {
+        let left = zoom * x;
+        let top = zoom * y;
+
+        this.$host
+            .css({
+                opacity: 0,
+                left: `${left}px`,
+                top: `${top - 100}px`
+            })
+            .animate({
+                opacity: 1,
+                top: `${top}px`
+            }, speed);
+    }
+}
+
 class RoundMap {
     constructor(options) {
-        this.$host = $(options.container);
+        this.$container = $(options.container);
         this.options = options;
 
-        this.setupWorld(0, 0);
-        this.setupMarker(0, 0);
-        this.init();
+        this.fallingSpeed = 350;
+
+        this.createWorld(0, 0);
+        this.createMarker(0, 0);
+        this.initialize();
     }
 
-    setupWorld(x, y) {
-        let $world = this.$host.find('.world');
-        this.world = {
-            selector: $world,
-            left: x,
-            top: y
-        };
+    createWorld(x, y) {
+        let $world = this.$container.find('.world');
+        this.world = new World($world, x, y);
     }
 
-    setupMarker(x, y) {
-        let $marker = this.$host.find('.marker-point');
-        this.marker = {
-            selector: $marker,
-            left: x,
-            top: y
-        };
+    createMarker(x, y) {
+        let $marker = this.$container.find('.marker-point');
+        this.marker = new Marker($marker, x, y);
+        this.marker.hide();
     }
 
-    init() {
-        // init animate 
-        this.marker.selector.hide();
-        this.world.selector.animate({
-            'background-position': (this.world.selector.width() * -5)+'px'
-        }, {
-            duration: this.options.rotate/2,
-            complete: () => {
-                this.marker.selector.show();
+    initialize() {
+        let offset = (this.world.width * -5);
+        let speed = this.options.rotateSpeed / 2;
+
+        this.world.spinTo(offset, speed)
+            .then(() => {
                 this.moveTo(this.options.initCoords);
-            }
-        });
+            })
 
-        this.addEvents()
+        this.setupMouseEvents();
     }
 
     setCoords(coords) {
-        this.marker.left = coords.marker.left;
-        this.marker.top = coords.marker.top;
-        this.world.left = coords.world.left;
-        this.world.top = coords.world.top;
+        this.marker.x = coords.marker.left;
+        this.marker.y = coords.marker.top;
+        this.world.x = coords.world.left;
+        this.world.y = coords.world.top;
     }
 
-    addOffset(el, diffX, diffY) {
-        switch(el){
-            case('world'):
-                debugger;
-                this.world.left += diffX;
-                this.world.top += diffY;
-                this.world.left = this.world.left % this.$host.width();
-                this.world.top = this.world.top % this.$host.height();
+    updateWorldPosition(diffX, diffY) {
+        this.world.x += diffX;
+        this.world.y += diffY;
+        this.world.x %= this.$container.width();
+        this.world.y %= this.$container.height();
 
-                this.world.selector.css({
-                    'background-position': (this.world.left * this.options.zoom)+ 'px ' +(this.world.top * this.options.zoom) + 'px'
-                    //'background-position-y': this.world.top+'px' 
-                });
-                break;
+        let x = (this.world.x * this.options.zoom);
+        let y = (this.world.y * this.options.zoom);
+        this.world.setPositionTo(x, y);
+    }
 
-            case('marker'):
-                this.marker.left += diffX;
-                this.marker.top += diffY;
-                this.marker.left = this.marker.left < 0 ? 0 : this.marker.left;
-                this.marker.left = this.marker.left > this.$host.width() ? this.$host.width() : this.marker.left;
+    updateMarkerPosition(diffX, diffY) {
+        this.marker.x += diffX;
+        this.marker.y += diffY;
+        this.marker.x = this.marker.x < 0 ? 0 : this.marker.x;
+        this.marker.x = this.marker.x > this.$container.width() ? this.$container.width() : this.marker.x;
 
-                this.marker.top = this.marker.top < 0 ? 0 : this.marker.top;
-                this.marker.top = this.marker.top > this.$host.height() ? this.$host.height() : this.marker.top;
-                           
-                this.marker.selector.css({
-                    'left': (this.marker.left * this.options.zoom)+'px', 
-                    'top': (this.marker.top * this.options.zoom)+'px'
-                });
-        }
+        this.marker.y = this.marker.y < 0 ? 0 : this.marker.y;
+        this.marker.y = this.marker.y > this.$container.height() ? this.$container.height() : this.marker.y;
+
+        let x = (this.marker.x * this.options.zoom);
+        let y = (this.marker.y * this.options.zoom);
+        this.marker.setPositionTo(x, y);
     }
 
     moveTo(coords) {
         this.setCoords(coords);
-        
-        // Hide and set marker 
-        this.marker.selector
-            .css({
-                'opacity': 0,
-                'left': (this.options.zoom * this.marker.left)+'px', 
-                'top': (this.options.zoom * (this.marker.top-100)) +'px'
-            });
-        
+
         // animate
-        this.world.selector.animate({
-            'background-position': (this.options.zoom * this.world.left)+ 'px ' +(this.options.zoom * this.world.top)+'px'
-        }, {
-            duration: this.options.rotate/4,
-            complete: () => {
-                this.marker.selector
-                .animate({
-                    opacity: 1,
-                    top: (this.options.zoom * this.marker.top)+'px'
-                }, this.options.markerFalling);
-            }
+        let pos = (this.options.zoom * this.world.x)+ 'px ' +(this.options.zoom * this.world.y);
+        let speed = this.options.rotateSpeed / 4;
+
+        this.world.spinTo(pos).then(() => {
+            let x = this.marker.x;
+            let y = this.marker.y;
+            this.marker.dropAt(x, y, this.options.zoom, this.fallingSpeed);
         });
     }
 
-    addEvents() {
+    setupMouseEvents() {
+        let $doc = $(document);
         let handle = null;
         let mouseSavedX = null;
         let mouseSavedY = null;
 
-        this.marker.selector.mousedown((e) => {
-            if (e.button==0) {
-                mouseSavedX = e.clientX;
-                mouseSavedY = e.clientY;
-                
-                handle = 'marker';
-            }
-            e.preventDefault();
-        });
-        
-        this.world.selector.mousedown((e) => {
-            if (e.button==0) {
-                mouseSavedX = e.clientX;
-                mouseSavedY = e.clientY;
-                
-                handle = 'world';
-            }
-            e.preventDefault();
-        });
-        
-        $(document).mousemove((e) => {
-            let diffX, diffY;
-            if (mouseSavedX===null || mouseSavedY===null) {
-                return;
-            }
-            diffX = e.clientX - mouseSavedX;
-            diffY = e.clientY - mouseSavedY;
-            mouseSavedX = e.clientX;
-            mouseSavedY = e.clientY;
+        this.marker.on('mousedown', (evt) => {
+            evt.preventDefault();
 
-            this.addOffset(handle, diffX, diffY);
+            if (!evt.button === 0) return;
+
+            mouseSavedX = evt.clientX;
+            mouseSavedY = evt.clientY;
+            handle = 'marker';
+        });
+
+        this.world.on('mousedown', (evt) => {
+            evt.preventDefault();
+
+            if (!evt.button === 0) return;
+
+            mouseSavedX = evt.clientX;
+            mouseSavedY = evt.clientY;
+            handle = 'world';
         });
         
-        $(document).mouseup((e) => {
+        $doc.on('mousemove', (evt) => {
+            let diffX;
+            let diffY;
+
+            if (mouseSavedX === null || mouseSavedY === null) return;
+
+            diffX = evt.clientX - mouseSavedX;
+            diffY = evt.clientY - mouseSavedY;
+            mouseSavedX = evt.clientX;
+            mouseSavedY = evt.clientY;
+
+            switch (handle) {
+                case 'world':
+                    return void this.updateWorldPosition(diffX, diffY);
+
+                case 'marker':
+                    return void this.updateMarkerPosition(diffX, diffY);
+
+                // No default
+            }
+        });
+
+       $doc.on('mouseup', (evt) => {
             mouseSavedX = null;
             mouseSavedY = null;
             handle = null;

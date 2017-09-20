@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div id="canvas" class="roundmap">
+<div class="roundmap">
     <div class="world"></div>
     <div class="marker-point" style="width: 0px; height: 0px; position: absolute;">
         <i class="marker"></i>
@@ -23,9 +23,8 @@
             marker:{ left: 150, top: 150 }, 
             world: { left: 0, top: 0 }
         },
-        container: '#canvas',
-        rotate: 2500,
-        markerFalling: 350,
+        container: '.roundmap',
+        rotateSpeed: 2500,
         zoom: 1
     });
 </script>
