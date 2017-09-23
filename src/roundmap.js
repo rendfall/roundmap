@@ -108,14 +108,13 @@ class RoundMap {
             mouseSavedX = evt.clientX;
             mouseSavedY = evt.clientY;
 
-            switch (handle) {
-                case 'world':
-                    return void this.updateWorldPosition(diffX, diffY);
+            if (handle === 'marker') {
+                this.updateMarkerPosition(diffX, diffY);
+            }
 
-                case 'marker':
-                    return void this.updateMarkerPosition(diffX, diffY);
-
-                // No default
+            if (handle === 'world') {
+                this.updateWorldPosition(diffX, diffY);
+                this.updateMarkerPosition(diffX, diffY);
             }
         });
 
