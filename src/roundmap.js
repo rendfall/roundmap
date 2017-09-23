@@ -26,7 +26,7 @@ class RoundMap {
     }
 
     initialize() {
-        let { rotateSpeed, zoom, initCoords } = this.options;
+        let { rotateSpeed, initCoords } = this.options;
         let { x, y } = initCoords.world;
 
         this.marker.hide();
@@ -34,7 +34,7 @@ class RoundMap {
             .spinTo(x, y, rotateSpeed, this.rotateOffset)
             .then(() => {
                 let { x, y } = initCoords.marker;
-                this.marker.dropAt(x, y, zoom, this.fallingSpeed);
+                this.marker.dropAt(x, y, this.fallingSpeed);
             })
             .catch((err) => {
                 console.log('Spin animation has failed', err);

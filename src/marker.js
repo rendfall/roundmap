@@ -11,20 +11,17 @@ class Marker extends layerAbstract {
         });
     }
 
-    dropAt(x, y, zoom = 1, speed = 0) {
-        let left = zoom * x;
-        let top = zoom * y;
-
+    dropAt(x, y, speed = 0) {
         this.$host
             .css({
                 opacity: 0,
-                left: `${left}px`,
-                top: `${top - 100}px`
+                left: `${x}px`,
+                top: `${y - 100}px`
             })
             .stop(true, true)
             .animate({
                 opacity: 1,
-                top: `${top}px`
+                top: `${y}px`
             }, speed);
     }
 }
