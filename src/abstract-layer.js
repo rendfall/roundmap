@@ -12,6 +12,13 @@ class layerAbstract {
         this.$host.css('opacity', 1);
     }
 
+    getPosition() {
+        return { 
+            x: this.x , 
+            y: this.y 
+        };
+    }
+
     setPosition(x, y) {
         this.x = x;
         this.y = y;

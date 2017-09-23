@@ -14,26 +14,26 @@ class RoundMap {
     }
 
     createWorld() {
-        let { x, y } = this.options.initCoords.world;
+        let { x, y } = this.options.world;
         let $world = this.$container.find('.world');
         this.world = new World($world, x, y);
     }
 
     createMarker() {
-        let { x, y } = this.options.initCoords.marker;
+        let { x, y } = this.options.marker;
         let $marker = this.$container.find('.marker-point');
         this.marker = new Marker($marker, x, y);
     }
 
     initialize() {
-        let { rotateSpeed, initCoords } = this.options;
-        let { x, y } = initCoords.world;
+        let { rotateSpeed } = this.options;
+        let { x, y } = this.world.getPosition();
 
         this.marker.hide();
         this.world
             .spinTo(x, y, rotateSpeed, this.rotateOffset)
             .then(() => {
-                let { x, y } = initCoords.marker;
+                let { x, y } = this.options.marker;
                 this.marker.dropAt(x, y, this.fallingSpeed);
             })
             .catch((err) => {
