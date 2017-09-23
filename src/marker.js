@@ -3,7 +3,8 @@ class Marker extends layerAbstract {
         super($host, x, y);
     }
 
-    setPositionTo(x, y) {
+    setPosition(x, y) {
+        super.setPosition(x, y);
         this.$host.css({
             left: `${x}px`,
             top:  `${y}px`

@@ -27,7 +27,8 @@ class World extends layerAbstract {
         });
     }
 
-    setPositionTo(x, y) {
+    setPosition(x, y) {
+        super.setPosition(x, y);
         this.$host.css({
             backgroundPosition: `${x}px ${y}px`
         });

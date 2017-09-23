@@ -8,9 +8,9 @@ class RoundMap {
 
         this.createWorld();
         this.createMarker();
-        this.setupMouseEvents();
 
         this.initialize();
+        this.setupMouseEvents();
     }
 
     createWorld() {
@@ -48,80 +48,41 @@ class RoundMap {
         this.world.y = coords.world.top;
     }
 
-    updateWorldPosition(diffX, diffY) {
-        this.world.x += diffX;
-        this.world.y += diffY;
+    updateWorldPosition(x, y) {
+        let newX = this.world.x + x;
+        let newY = this.world.y + y;
 
-        let x = (this.world.x * this.options.zoom);
-        let y = (this.world.y * this.options.zoom);
-        this.world.setPositionTo(x, y);
+        this.world.setPosition(newX, newY);
+        this.updateMarkerPosition(x, y);
     }
 
-    updateMarkerPosition(diffX, diffY) {
-        this.marker.x += diffX;
-        this.marker.y += diffY;
-        this.marker.x = this.marker.x < 0 ? 0 : this.marker.x;
-        this.marker.x = this.marker.x > this.$container.width() ? this.$container.width() : this.marker.x;
+    updateMarkerPosition(x, y) {
+        let boundX = this.$container.width();
+        let boundY = this.$container.height();
+        let newX = this.marker.x + x;
+        let newY = this.marker.y + y;
 
-        this.marker.y = this.marker.y < 0 ? 0 : this.marker.y;
-        this.marker.y = this.marker.y > this.$container.height() ? this.$container.height() : this.marker.y;
+        newX = (newX > boundX) ? this.marker.x : newX;
+        newY = (newY > boundY) ? this.marker.y : newY;
 
-        let x = (this.marker.x * this.options.zoom);
-        let y = (this.marker.y * this.options.zoom);
-        this.marker.setPositionTo(x, y);
+        newX = (newX < 0) ? this.marker.x : newX;
+        newY = (newY < 0) ? this.marker.y : newY;
+
+        this.marker.setPosition(newX, newY);
     }
 
     setupMouseEvents() {
-        let $doc = $(document);
-        let handle = null;
-        let mouseSavedX = null;
-        let mouseSavedY = null;
+        let $marker = this.marker.$host;
+        let $world = this.world.$host;
+        let markerDragger = new Dragger($marker.get(0));
+        let worldDragger = new Dragger($world.get(0));
 
-        this.marker.on('mousedown', (evt) => {
-            evt.preventDefault();
-
-            if (!evt.button === 0) return;
-
-            mouseSavedX = evt.clientX;
-            mouseSavedY = evt.clientY;
-            handle = 'marker';
+        markerDragger.onDrag((pos) => {
+            this.updateMarkerPosition(pos.diffX, pos.diffY);
         });
 
-        this.world.on('mousedown', (evt) => {
-            evt.preventDefault();
-
-            if (!evt.button === 0) return;
-
-            mouseSavedX = evt.clientX;
-            mouseSavedY = evt.clientY;
-            handle = 'world';
-        });
-        
-        $doc.on('mousemove', (evt) => {
-            let diffX;
-            let diffY;
-
-            if (mouseSavedX === null || mouseSavedY === null) return;
-
-            diffX = evt.clientX - mouseSavedX;
-            diffY = evt.clientY - mouseSavedY;
-            mouseSavedX = evt.clientX;
-            mouseSavedY = evt.clientY;
-
-            if (handle === 'marker') {
-                this.updateMarkerPosition(diffX, diffY);
-            }
-
-            if (handle === 'world') {
-                this.updateWorldPosition(diffX, diffY);
-                this.updateMarkerPosition(diffX, diffY);
-            }
-        });
-
-       $doc.on('mouseup', (evt) => {
-            mouseSavedX = null;
-            mouseSavedY = null;
-            handle = null;
+        worldDragger.onDrag((pos) => {
+            this.updateWorldPosition(pos.diffX, pos.diffY);
         });
     }
 } 

@@ -1,8 +1,7 @@
 class layerAbstract {
     constructor($host, x, y) {
         this.$host = $host;
-        this.x = x;
-        this.y = y;
+        this.setPosition(x, y);
     }
 
     hide() {
@@ -11,6 +10,11 @@ class layerAbstract {
 
     show() {
         this.$host.css('opacity', 1);
+    }
+
+    setPosition(x, y) {
+        this.x = x;
+        this.y = y;
     }
 
     on(eventName, handlerFn) {
