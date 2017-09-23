@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div class="roundmap">
+<div id="roundmap" class="roundmap">
     <div class="world"></div>
     <div class="marker-point">
         <i class="marker"></i>
@@ -22,14 +22,16 @@
 <script src="./src/marker.js" type="text/javascript"></script>
 <script src="./src/roundmap.js" type="text/javascript"></script>
 <script>
-    new RoundMap({
+    let $container = document.getElementById('roundmap');
+    let options = {
         initCoords: { 
             marker:{ x: 125, y: 150 }, 
             world: { x: 0, y: 0 }
         },
-        container: '.roundmap',
         rotateSpeed: 1000
-    });
+    };
+
+    new RoundMap($container, options);
 </script>
 </body>
 </html>

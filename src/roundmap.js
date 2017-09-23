@@ -1,6 +1,6 @@
 class RoundMap {
-    constructor(options) {
-        this.$container = $(options.container);
+    constructor($container, options = {}) {
+        this.$container = $($container);
         this.options = options;
 
         this.fallingSpeed = 350;
