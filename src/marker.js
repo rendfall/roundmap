@@ -11,12 +11,13 @@ class Marker extends layerAbstract {
 
     dropAt(x, y, speed = 0) {
         let styleRef = this.$elRef.style;
+        let initialTop = parseInt(styleRef.top) - 100 + 'px';
+        let finialTop = styleRef.top;
+        styleRef.top = initialTop;
 
-        // styleRef.opacity = 0;
-        // styleRef.left = `${x}px`;
-        // styleRef.top = `${y - 100}px`;
-
-        styleRef.opacity = 1;
-        styleRef.top = `${y}px`;
+        animate(this.$elRef, {
+            opacity: [0, 1],
+            top: [initialTop, finialTop]
+        }, speed);
     }
 }
