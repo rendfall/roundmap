@@ -1,21 +1,25 @@
 class layerAbstract {
-    constructor($host, x, y) {
-        this.$host = $host;
+    constructor($elRef, x, y) {
+        this.$elRef = $elRef;
         this.setPosition(x, y);
     }
 
     hide() {
-        this.$host.css('opacity', 0);
+        this.$elRef.style.opacity = 0;
     }
 
     show() {
-        this.$host.css('opacity', 1);
+        this.$elRef.style.opacity = 1;
+    }
+
+    getElement() {
+        return this.$elRef;
     }
 
     getPosition() {
         return { 
-            x: this.x , 
-            y: this.y 
+            x: this.x,
+            y: this.y
         };
     }
 
@@ -25,6 +29,6 @@ class layerAbstract {
     }
 
     on(eventName, handlerFn) {
-        this.$host.on(eventName, handlerFn);
+        this.$elRef.addEventListener(eventName, handlerFn);
     }
 }

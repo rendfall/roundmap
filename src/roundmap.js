@@ -1,6 +1,6 @@
 class RoundMap {
     constructor($container, options = {}) {
-        this.$container = $($container);
+        this.$container = $container;
         this.options = options;
 
         this.fallingSpeed = 350;
@@ -15,13 +15,13 @@ class RoundMap {
 
     createWorld() {
         let { x, y } = this.options.world;
-        let $world = this.$container.find('.world');
+        let $world = this.$container.querySelector('.world');
         this.world = new World($world, x, y);
     }
 
     createMarker() {
         let { x, y } = this.options.marker;
-        let $marker = this.$container.find('.marker-point');
+        let $marker = this.$container.querySelector('.marker-point');
         this.marker = new Marker($marker, x, y);
     }
 
@@ -38,7 +38,7 @@ class RoundMap {
             })
             .catch((err) => {
                 console.log('Spin animation has failed', err);
-            })
+            });
     }
 
     setCoords(coords) {
@@ -57,8 +57,8 @@ class RoundMap {
     }
 
     updateMarkerPosition(x, y) {
-        let boundX = this.$container.width();
-        let boundY = this.$container.height();
+        let boundX = this.$container.clientWidth;
+        let boundY = this.$container.clientHeight;
         let newX = this.marker.x + x;
         let newY = this.marker.y + y;
 
@@ -72,10 +72,10 @@ class RoundMap {
     }
 
     setupMouseEvents() {
-        let $marker = this.marker.$host;
-        let $world = this.world.$host;
-        let markerDragger = new Dragger($marker.get(0));
-        let worldDragger = new Dragger($world.get(0));
+        let $marker = this.marker.getElement();
+        let $world = this.world.getElement();
+        let markerDragger = new Dragger($marker);
+        let worldDragger = new Dragger($world);
 
         markerDragger.onDrag((pos) => {
             this.updateMarkerPosition(pos.diffX, pos.diffY);
