@@ -9,7 +9,7 @@ https://rendfall.github.io/roundmap/ <br />
 
 # Roadmap (unordered list)
 
-- [ ] Remove jQuery dependency
+- [x] Remove jQuery dependency
 - [ ] Allow multi-markers
 - [ ] Support lat and lng for markers position
 - [ ] Add mobile support

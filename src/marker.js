@@ -1,27 +1,23 @@
 class Marker extends layerAbstract {
-    constructor($host, x, y) {
-        super($host, x, y);
+    constructor($elRef, x, y) {
+        super($elRef, x, y);
     }
 
     setPosition(x, y) {
         super.setPosition(x, y);
-        this.$host.css({
-            left: `${x}px`,
-            top:  `${y}px`
-        });
+        this.$elRef.style.left = `${x}px`;
+        this.$elRef.style.top = `${y}px`;
     }
 
     dropAt(x, y, speed = 0) {
-        this.$host
-            .css({
-                opacity: 0,
-                left: `${x}px`,
-                top: `${y - 100}px`
-            })
-            .stop(true, true)
-            .animate({
-                opacity: 1,
-                top: `${y}px`
-            }, speed);
+        let styleRef = this.$elRef.style;
+        let initialTop = parseInt(styleRef.top) - 100 + 'px';
+        let finialTop = styleRef.top;
+        styleRef.top = initialTop;
+
+        animate(this.$elRef, {
+            opacity: [0, 1],
+            top: [initialTop, finialTop]
+        }, speed);
     }
 }

@@ -1,36 +1,29 @@
 class World extends layerAbstract {
-    constructor($host, x, y) {
-        super($host, x, y);
+    constructor($elRef, x, y) {
+        super($elRef, x, y);
     }
 
     get width() {
-        return this.$host.width();
+        return this.$elRef.clientWidth;
+    }
+
+    get height() {
+        return this.$elRef.clientHeight;
     }
 
     spinTo(x, y, speed, offset = 0) {
         let start = { t: offset };
         let stop = { t: 0 };
-        let $host = this.$host;
+        let $elRef = this.$elRef;
 
         return new Promise((resolve, reject) => {
-            $(start)
-                .stop(true, true)
-                .animate(stop, {
-                    duration: speed,
-                    complete: () => void resolve(),
-                    fail: () => void reject(),
-                    step: (value) => {
-                        let posX = x + value;
-                        $host.css('backgroundPosition', `${posX}px ${y}px`);
-                    }
-                });
+            $elRef.style.backgroundPosition = `${x}px ${y}px`;
+            resolve();
         });
     }
 
     setPosition(x, y) {
         super.setPosition(x, y);
-        this.$host.css({
-            backgroundPosition: `${x}px ${y}px`
-        });
+        this.$elRef.style.backgroundPosition = `${x}px ${y}px`;
     }
 }
