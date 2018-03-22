@@ -31,7 +31,7 @@ function animate($elRef, styleList, duration = 300) {
                 let from = parseInt(range[0]);
                 let to = parseInt(range[1]);
                 return from + ((to - from) * value); 
-            }
+            };
             
             if (name === 'opacity') {
                 $elRef.style[name] = getValue();

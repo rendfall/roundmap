@@ -12,14 +12,13 @@ class World extends layerAbstract {
     }
 
     spinTo(x, y, speed, offset = 0) {
-        let start = { t: offset };
-        let stop = { t: 0 };
         let $elRef = this.$elRef;
+        let start = `${x}px ${y}px`;
+        let end = `${offset}px ${offset}px`;
 
-        return new Promise((resolve, reject) => {
-            $elRef.style.backgroundPosition = `${x}px ${y}px`;
-            resolve();
-        });
+        return animate($elRef, {
+            backgroundPosition: [end, start]
+        }, speed);
     }
 
     setPosition(x, y) {
